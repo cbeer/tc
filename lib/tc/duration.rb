@@ -1,7 +1,15 @@
 require 'parslet'
 
 class Tc::Duration < Parslet::Parser
-  # base unites
+  def stri(str)
+    key_chars = str.split(//)
+    key_chars.
+      collect! { |char| match["#{char.upcase}#{char.downcase}"] }.
+      reduce(:>>)
+  end
+
+
+  # base units
   rule(:integer) { match('[0-9]') }
   rule(:space) { match('\s').repeat(1) }
   rule(:space?) { space.maybe }
@@ -17,9 +25,9 @@ class Tc::Duration < Parslet::Parser
   rule(:df_separator) { match(';').as(:df) }
 
   # unit strings
-  rule(:s_seconds) { ((space? >> match('[Ss]') >> (str('ec') >> str('s').maybe).maybe >> (str('.') | str('ond')).maybe >> str('s').maybe) | str('"'))}
-  rule(:s_minutes) { ((space? >> match['Mm'] >> (str('in') | str('IN')).maybe >> (str('.') | (str('ute') >> str('s')).maybe).maybe) | str("'"))}
-  rule(:s_hours) { (space? >> match['Hh'] >> ((str('r') >> str('s').maybe >> str('.').maybe) | (str('our').maybe >> str('s').maybe )).maybe) }
+  rule(:s_seconds) { ((space? >> stri('s') >> (stri('ec') >> stri('s').maybe).maybe >> (str('.') | stri('ond')).maybe >> stri('s').maybe) | str('"'))}
+  rule(:s_minutes) { ((space? >> stri('m') >> stri('in').maybe >> (str('.') | (stri('ute') >> stri('s')).maybe).maybe) | str("'"))}
+  rule(:s_hours) { (space? >> stri('h') >> ((stri('r') >> stri('s').maybe >> str('.').maybe) | (stri('our').maybe >> stri('s').maybe )).maybe) }
 
   # unit values
   
