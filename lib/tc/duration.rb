@@ -67,9 +67,10 @@ class Tc::Duration < Parslet::Parser
   rule(:gt) { str('>') }
   rule(:lt) { str('<') }
   rule(:ish) { str('ish') }
+  rule(:s_approx) { str('approx') >> str('.').maybe }
 
   # full matchers
-  rule(:approx) { space? >> (q | ca | gt |lt | ish).as(:approximate) >> space?}
+  rule(:approx) { space? >> (s_approx | q | ca | gt |lt | ish).as(:approximate) >> space?}
   rule(:approximate_head) { approx >> exact }
   rule(:approximate_tail) { exact >> approx }
   rule(:approximate) { approximate_head | approximate_tail }

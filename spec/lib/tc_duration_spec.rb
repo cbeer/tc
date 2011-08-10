@@ -450,6 +450,10 @@ describe Tc::Duration do
     it "should consume 'ca. 77m'" do
       parser.approximate.should parse('ca. 77m')
     end
+
+    it "should consume 'approx. 32min'" do
+      parser.approximate.should parse('approx. 32min')
+    end
   end
 
   context "timecode" do
