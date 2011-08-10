@@ -78,8 +78,8 @@ class Tc::Duration < Parslet::Parser
   # approximate indicators
   rule(:q) { str('?') }
   rule(:ca) { str('c') >> str('a').maybe >> (str('.') | str(',')).maybe }
-  rule(:gt) { str('>') }
-  rule(:lt) { str('<') }
+  rule(:gt) { str('>').as(:gt) }
+  rule(:lt) { str('<').as(:lt) }
   rule(:ish) { str('ish') }
   rule(:s_approx) { str('approx') >> str('.').maybe }
 

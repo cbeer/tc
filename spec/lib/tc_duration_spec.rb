@@ -445,6 +445,10 @@ describe Tc::Duration do
     
     it "should consume '<1hr'" do
       parser.approximate.should parse('<1hr')
+
+      parsed = parser.approximate.parse('<1hr')
+      parsed.should include(:approximate)
+      parsed[:approximate].should include(:lt)
     end
 
     it "should consume 'ca. 77m'" do
