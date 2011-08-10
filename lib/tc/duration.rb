@@ -5,7 +5,11 @@ class Tc::Duration < Parslet::Parser
   rule(:integer) { match('[0-9]') }
   rule(:space) { match('\s').repeat(1) }
   rule(:space?) { space.maybe }
-  rule(:zero_zero_to_fifty_nine) { match('[0-5]') >> match('[0-9]') }
+
+  rule(:arbitrary_length_integer) { integer.repeat(1) }
+  rule(:one_or_two_digit_integer) { integer.repeat(1,2) }
+  rule(:zero_zero_to_fifty_nine) { (match('[0-5]') >> match('[0-9]') | match('[0-9]')) }
+  rule(:zero_zero_to_twenty_nine) { (match('[0-2]') >> match('[0-9]') | match('[0-9]')) }
 
   #separators
   rule(:separator) { match(':') }
@@ -13,25 +17,27 @@ class Tc::Duration < Parslet::Parser
   rule(:df_separator) { match(';').as(:df) }
 
   # unit strings
-  rule(:s_seconds) { (space? >> match('[Ss]') >> (str('ec') >> str('s').maybe).maybe >> (str('.') | str('ond')).maybe >> str('s').maybe) | str('"')}
-  rule(:s_minutes) { (space? >> match['Mm'] >> (str('in') | str('IN')).maybe >> (str('.') | (str('ute') >> str('s')).maybe).maybe) | str("'")}
-  rule(:s_hours) { space? >> match['Hh'] >> ((str('r') >> str('s').maybe >> str('.').maybe) | (str('our').maybe >> str('s').maybe )).maybe }
+  rule(:s_seconds) { ((space? >> match('[Ss]') >> (str('ec') >> str('s').maybe).maybe >> (str('.') | str('ond')).maybe >> str('s').maybe) | str('"'))}
+  rule(:s_minutes) { ((space? >> match['Mm'] >> (str('in') | str('IN')).maybe >> (str('.') | (str('ute') >> str('s')).maybe).maybe) | str("'"))}
+  rule(:s_hours) { (space? >> match['Hh'] >> ((str('r') >> str('s').maybe >> str('.').maybe) | (str('our').maybe >> str('s').maybe )).maybe) }
 
   # unit values
+  
+  # idealized
+  rule(:ff) { zero_zero_to_twenty_nine >> integer.absnt? }
+  rule(:ss) { zero_zero_to_fifty_nine }
+  rule(:mm) { zero_zero_to_fifty_nine >> integer.absnt? }
+  rule(:hh) { arbitrary_length_integer }
 
   # seconds
-  rule(:ss) { ((match('[0-5]') >> match('[0-9]')) | match('[0-9]') ) >> integer.absnt? }
-  rule(:sec) { ss | integer.repeat(1) }
-  rule(:fraction) { str('.') >> integer.repeat(1)}
-  rule(:ff) { match('[0-2]') >> match('[0-9]') >> integer.absnt? }
-  rule(:frame) { match('[0-5]') >> match('[0-9]') >> integer.absnt? }
+  rule(:sec) { arbitrary_length_integer }
+  rule(:fraction) { str('.') >> arbitrary_length_integer }
+  rule(:frame) { zero_zero_to_fifty_nine >> integer.absnt? }
 
   # minutes
-  rule(:mm) { ((match('[0-5]') >> match('[0-9]')) | match('[0-9]')) >> integer.absnt? }
-  rule(:min) { integer.repeat(1) }
+  rule(:min) { arbitrary_length_integer }
 
-  #hours
-  rule(:hh) { integer.repeat(1) }
+  # hours
   rule(:small_h) { str('0').maybe >> match('[0-2]') >> integer.absnt? }
 
   # unit matchers
@@ -46,7 +52,7 @@ class Tc::Duration < Parslet::Parser
   rule(:m) { minutes >> s_minutes.maybe }
 
   # timecode matchers
-  rule(:smpte) { integer.repeat(1).as(:hours) >> separator >> zero_zero_to_fifty_nine.as(:minutes) >> separator >> zero_zero_to_fifty_nine.as(:seconds) >> frames } 
+  rule(:smpte) { hh.as(:hours) >> separator >> mm.as(:minutes) >> separator >> ss.as(:seconds) >> frames } 
   rule(:h_m) { hours >> separator >> minutes >> s_minutes.maybe }
   rule(:h_m_s) { hours >> separator >> minutes >> separator >> seconds >> s_seconds.maybe }
   rule(:small_h_m_s) { small_h.as(:hours) >> separator >> minutes >> separator >> seconds >> s_seconds.maybe } 
