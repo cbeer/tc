@@ -1,3 +1,3 @@
 module Tc
-  VERSION = "0.0.1pre1"
+  VERSION = "0.0.1"
 end
