@@ -1,5 +1,5 @@
 require "tc/version"
 
 module Tc
-  # Your code goes here...
+  autoload :Duration, 'tc/duration'
 end
