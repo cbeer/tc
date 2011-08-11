@@ -510,5 +510,9 @@ describe Tc::Duration do
     it "should consume ':00:26:30'" do
       parser.duration.should parse(':00:26:30')
     end
+
+    it "should consume ':00:03:30'" do
+      parser.duration.should parse(':00:03:30')
+    end
   end
 end

@@ -93,10 +93,10 @@ class Tc::Duration < Parslet::Parser
   rule(:timecode) { approximate | exact }
 
   # header tokens
-  rule(:trt) { str('TRT').as(:trt) >> space? }
-  rule(:colon_prefix) { str(':') }
+  rule(:trt) { str('TRT').as(:trt) >> space? >> timecode }
+  rule(:colon_prefix) { str(':') >> timecode }
 
-  rule(:duration) { (trt | colon_prefix).maybe >> timecode } 
+  rule(:duration) { trt | colon_prefix | timecode } 
 
   root :duration
 end
