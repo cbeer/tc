@@ -98,6 +98,10 @@ describe Tc::Duration do
       parser.small_h.should parse('01')
     end
 
+    it "should consume '0'" do
+      parser.small_h.should parse('0')
+    end
+
     it "should consume '2'" do
       parser.small_h.should parse('2')
     end
@@ -111,6 +115,10 @@ describe Tc::Duration do
     it "should consume '01:09:26 s'" do
       parser.small_h_m_s.should parse('01:09:26 s')
     end
+
+    it "should consume '0:28:46'" do
+      parser.small_h_m_s.should parse('0:28:46')
+    end
     
     it "should not consume '275:00:00'" do
       parser.small_h_m_s.should_not parse('275:00:00')
@@ -119,6 +127,7 @@ describe Tc::Duration do
     it "should not consume '4:52:12'" do
       parser.small_h_m_s.should_not parse('4:52:12')
     end
+
   end
 
   context 's_hours' do
@@ -316,6 +325,15 @@ describe Tc::Duration do
       parsed[:hours].should == '00'
       parsed[:minutes].should == '01'
       parsed[:seconds].should == '02.042'
+    end
+
+    it "should parse '0:51:36'" do
+      parser.exact.should parse('0:51:36')
+      parsed = parser.exact.parse('0:51:36')
+
+      parsed[:hours].should == '0'
+      parsed[:minutes].should == '51'
+      parsed[:seconds].should == '36'
     end
 
     it "should parse '0.26875'" do

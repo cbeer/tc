@@ -46,7 +46,9 @@ class Tc::Duration < Parslet::Parser
   rule(:min) { arbitrary_length_integer }
 
   # hours
-  rule(:small_h) { str('0').maybe >> match('[0-2]') >> integer.absnt? }
+  rule(:zero_to_three) { match('[0-3]')  >> integer.absnt?}
+  rule(:zero_zero_to_zero_three) { str('0') >> match('[0-3]')  >> integer.absnt?}
+  rule(:small_h) { (zero_to_three | zero_zero_to_zero_three) }
 
   # unit matchers
   rule(:frames) { (ndf_separator | df_separator) >> (ff | frame).as(:frames) }
