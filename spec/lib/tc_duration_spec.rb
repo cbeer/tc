@@ -66,6 +66,10 @@ describe Tc::Duration do
     it "should consume 'minutes'" do
       parser.s_minutes.should parse(' minutes')
     end
+
+    it "should consume 'mins'" do
+      parser.s_minutes.should parse('mins')
+    end
   end
 
   context "m" do

@@ -26,7 +26,7 @@ class Tc::Duration < Parslet::Parser
 
   # unit strings
   rule(:s_seconds) { ((space? >> stri('s') >> (stri('ec') >> stri('s').maybe).maybe >> (str('.') | stri('ond')).maybe >> stri('s').maybe) | str('"'))}
-  rule(:s_minutes) { ((space? >> stri('m') >> stri('in').maybe >> (str('.') | (stri('ute') >> stri('s')).maybe).maybe) | str("'"))}
+  rule(:s_minutes) { ((space? >> stri('m') >> stri('in').maybe >> (str('.') | str('s') | (stri('ute') >> stri('s')).maybe).maybe) | str("'"))}
   rule(:s_hours) { (space? >> stri('h') >> ((stri('r') >> stri('s').maybe >> str('.').maybe) | (stri('our').maybe >> stri('s').maybe )).maybe) }
 
   # unit values
