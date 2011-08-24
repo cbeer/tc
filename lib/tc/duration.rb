@@ -49,6 +49,7 @@ class Tc::Duration < Parslet::Parser
   rule(:zero_to_three) { match('[0-3]')  >> integer.absnt?}
   rule(:zero_zero_to_zero_three) { str('0') >> match('[0-3]')  >> integer.absnt?}
   rule(:small_h) { (zero_to_three | zero_zero_to_zero_three) }
+  rule(:small_m) { ((match('[0-3]') >> integer >> integer) | (integer >> integer) ).as(:minutes) >> integer.absnt?}
 
   # unit matchers
   rule(:frames) { (ndf_separator | df_separator) >> (ff | frame).as(:frames) }
@@ -60,6 +61,10 @@ class Tc::Duration < Parslet::Parser
   rule(:s) { seconds  >> s_seconds.maybe }
   rule(:h) { hours >> s_hours.maybe }
   rule(:m) { minutes >> s_minutes.maybe }
+
+  rule(:m_mins) { minutes >> s_minutes }
+  rule(:s_secs) { seconds >> s_seconds }
+
 
   # timecode matchers
   rule(:smpte) { hh.as(:hours) >> separator >> mm.as(:minutes) >> separator >> ss.as(:seconds) >> frames } 
@@ -74,7 +79,7 @@ class Tc::Duration < Parslet::Parser
   rule(:min_sec) {  minutes >> s_minutes >> space? >> (seconds >> s_seconds.maybe).maybe }
 
   rule(:unambiguous) { smpte | small_h_m_s | hr_min | hr_min_sec | min_sec }
-  rule(:ambiguous) { m_s_f | h_m_s | m_s | h_m | m | s }
+  rule(:ambiguous) { m_s_f | h_m_s | m_s | h_m | m_mins | s_secs | small_m | s | m }
   rule(:exact) { unambiguous | ambiguous }
 
   # approximate indicators
